@@ -20,7 +20,7 @@ export default async function HeroSection() {
 				{/* grid1 */}
 				<div className="flex flex-1 flex-col items-start justify-start gap-6">
 					<div className="flex flex-col items-start justify-start gap-6 self-stretch">
-						<h1 className="justify-start self-stretch text-7xl leading-[68px] font-bold text-balance text-lime-400">
+						<h1 className="justify-start self-stretch text-7xl  font-black text-balance text-lime-400">
 							{hero?.heading}
 						</h1>
 						<p className="flex-1 justify-center text-lg leading-7 font-normal text-balance text-emerald-100">

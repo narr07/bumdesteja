@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { Button } from "./ui/button";
 export default function Navbar() {
 	const pathname = usePathname();
 	const links = [
@@ -31,9 +32,10 @@ export default function Navbar() {
 						<Link
 							key={link.href}
 							href={link.href}
-							className={`p-2 ${pathname === link.href ? "font-bold" : ""} ${link.href === "/informasi" ? "rounded-2xl border bg-zaitun text-white" : ""}`}
 						>
-							{link.label}
+							<Button variant={pathname === link.href ? "lemon" : "ghost"} className="text-lg font-semibold">
+								{link.label}
+							</Button>
 						</Link>
 					))}
 				</div>

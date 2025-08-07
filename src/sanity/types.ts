@@ -182,3 +182,33 @@ export type AllSanitySchemaTypes =
   | Slug
   | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
+// Source: ./src/sanity/lib/queries.ts
+// Variable: HOME_HERO_QUERY
+// Query: *[_type == "home"][0].hero{  heading,  subheading,  image,  cta}
+export type HOME_HERO_QUERYResult = {
+  heading: string | null;
+  subheading: string | null;
+  image: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+  cta: {
+    text?: string;
+    link?: string;
+  } | null;
+} | null;
+// Query TypeMap
+import "@sanity/client";
+declare module "@sanity/client" {
+  interface SanityQueries {
+    "*[_type == \"home\"][0].hero{\n  heading,\n  subheading,\n  image,\n  cta\n}": HOME_HERO_QUERYResult;
+  }
+}
