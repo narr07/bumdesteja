@@ -4,9 +4,9 @@ import { HOME_HERO_QUERY } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import { client } from "@/sanity/lib/client";
 export default async function HeroSection() {
-	// Revalidate setiap 60 detik (ISR)
+	// Revalidate setiap 10 detik (ISR)
 	const hero = await client.fetch(HOME_HERO_QUERY, {}, {
-		next: { revalidate: 60 } // ISR 60 detik
+		next: { revalidate: 10 } // ISR 10 detik
 	});
 	const imageUrl = hero?.image
 		? urlFor(hero.image).height(800).width(800).quality(85).auto("format").url()

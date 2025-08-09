@@ -1,87 +1,65 @@
-// src/app/components/ProgramSection.tsx
-"use client";
-import { useEffect, useRef } from "react";
-import { animate, createScope } from "animejs";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// src/app/program/page.tsx
+import { client } from "@/sanity/lib/client";
+import { PROGRAM_LIST_QUERY } from "@/sanity/lib/queries";
+import { urlFor } from "@/sanity/lib/image";
+import Image from "next/image";
+import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-const programList = [
-	{
-		nama: "Bank Sampah Desa",
-		deskripsi: "Pengelolaan sampah untuk ekonomi sirkular dan lingkungan bersih.",
-		icon: "♻️",
-	},
-	{
-		nama: "Digitalisasi UMKM",
-		deskripsi: "UMKM lokal go digital melalui pelatihan & teknologi.",
-		icon: "💻",
-	},
-	{
-		nama: "Taman Edukasi Ciranca",
-		deskripsi: "Wisata edukasi untuk anak-anak dan komunitas desa.",
-		icon: "🌳",
-	},
-	{
-		nama: "Koperasi Desa Pintar",
-		deskripsi: "Produk dan hasil panen dipasarkan lewat koperasi desa.",
-		icon: "📈",
-	},
-];
-export default function ProgramSection() {
-	const mainRef = useRef<HTMLDivElement>(null);
-	const scope = useRef<ReturnType<typeof createScope> | null>(null);
-	useEffect(() => {
-		scope.current = createScope({ root: mainRef });
-		if (mainRef.current) {
-			animate(mainRef.current, {
-				opacity: [0, 1],
-				translateY: [40, 0],
-				duration: 900,
-				easing: "out(3)",
-			});
-		}
-		return () => scope.current?.revert();
-	}, []);
+// Enable ISR (Incremental Static Regeneration) per 60 detik
+export const revalidate = 60;
+export default async function ProgramPage() {
+	const programs = await client.fetch(PROGRAM_LIST_QUERY);
 	return (
-		<main
-			ref={mainRef}
-			style={{ padding: 32, opacity: 0 }}
-			className="mx-auto max-w-6xl px-4 pb-20"
-		>
+		<main className="mx-auto max-w-6xl px-4 pb-20">
 			<h1 className="text-3xl md:text-4xl font-bold text-lime-500 mb-3">
         Program Bumdes
 			</h1>
 			<p className="mb-8 text-neutral-700">
         Berikut daftar program unggulan Bumdes Desa Ciranca:
 			</p>
-			{/* Grid: Mobile 1 kolom, Tablet/Desktop max 2 kolom */}
+			{/* Grid 1 kolom mobile, 2 kolom desktop */}
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-				{programList.map((program, idx) => (
+				{programs?.map((program: any, idx: number) => (
 					<Card
 						key={idx}
-						// Tambahkan class `group`
 						className="group rounded-2xl shadow-md bg-pastel hover:bg-lemon flex flex-col justify-between hover:shadow-lg transition"
 					>
 						<CardContent className="p-6 flex-1 flex flex-col">
-							<div className="text-4xl mb-4">{program.icon}</div>
+							{program.image && (
+								<Image
+									src={urlFor(program.image).width(500).height(300).url()}
+									alt={program.title}
+									width={500}
+									height={300}
+									className="rounded-xl object-cover mb-4"
+									priority
+								/>
+							)}
 							<h3 className="font-bold text-lg mb-2 text-zaitun">
-								{program.nama}
+								{program.title}
 							</h3>
 							<p className="text-sm text-neutral-600 flex-1">
-								{program.deskripsi}
+								{program.description}
 							</p>
 						</CardContent>
 						<CardFooter className="p-6 pt-0">
+							{/* Button styled: warna berubah saat card hover */}
 							<Button
+								asChild
 								variant="lemon"
 								className="
-            font-semibold text-zaitun 
-            transition-colors 
-            group-hover:bg-zaitun 
-            group-hover:text-lemon
-          "
-								onClick={() => alert(`Detail ${program.nama}`)}
+    font-semibold text-zaitun
+    transition-colors
+    group-hover:bg-zaitun
+    group-hover:text-lemon
+    w-full
+  "
 							>
-          Detail
+								<Link href={`/program/${program.slug}`}>
+    Detail
+								</Link>
 							</Button>
 						</CardFooter>
 					</Card>
