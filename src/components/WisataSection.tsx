@@ -1,91 +1,101 @@
 import Image from "next/image";
 export default function WisataSection() {
 	return (
-		<div className="section-wisata items-startoverflow-hidden inline-flex w-full justify-center rounded-[40px] bg-pastel py-16">
-			<div className="flex items-start justify-start">
-				<div className="inline-flex flex-col items-start justify-start">
-					<div className="flex flex-col items-start justify-start gap-6 self-stretch">
-						<div className="justify-center text-sm leading-tight font-normal tracking-wide text-neutral-800 uppercase">
-              layanan
+		<div>
+			<section className="mx-auto  bg-pastel rounded-[40px] ">
+				<div className="flex flex-col md:flex-row px-4 py-12 sm:px-6 lg:px-8 items-center md:items-start gap-10 md:gap-16 mx-auto max-w-7xl    md:py-16 w-full">
+					{/* Side (Text/CTA) */}
+					<div className="w-full md:w-2/5 flex flex-col items-center md:items-start justify-center gap-6">
+						<div className="uppercase text-sm font-normal tracking-wide text-neutral-800">
+            layanan
 						</div>
-						<div className="w-60 justify-start text-4xl leading-10 font-semibold text-neutral-800">
-              Wisata Desa
+						<div className="w-full text-center md:text-left text-3xl sm:text-4xl lg:text-5xl font-semibold text-neutral-800">
+            Wisata Desa
 						</div>
-						<div className="inline-flex h-9 items-center justify-center gap-2 rounded-[50px] bg-neutral-800 px-5 py-2 outline-1 outline-neutral-800">
-							<div className="justify-start text-base leading-normal font-normal text-emerald-100">
-                Baca Selengkapnya
-							</div>
-						</div>
+						<a href="#" className="mt-4 inline-flex h-9 items-center gap-2 rounded-[50px] bg-neutral-800 px-6 py-2 text-base font-normal text-emerald-100 hover:bg-neutral-700 transition">
+            Baca Selengkapnya
+						</a>
 					</div>
-				</div>
-				<div className="flex flex-1 items-start justify-evenly gap-8">
-					<div className="flex flex-1 items-start justify-between gap-8 self-stretch">
-						<div className="inline-flex flex-col items-start justify-start gap-4">
-							<div className="inline-flex w-60 items-start justify-start">
+					{/* Wisata Cards */}
+					<div className="w-full md:w-3/5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+						{/* Card 1 */}
+						<div className="flex flex-col items-start gap-4">
+							<div className="w-full">
 								<Image
 									alt="wisata"
 									width={240}
 									height={311}
-									className="h-80 w-60 rounded-[20px]"
 									src="https://picsum.photos/240/311"
+									className="rounded-[20px] object-cover w-full h-64 sm:h-72"
+									priority
 								/>
 							</div>
-							<div className="flex w-60 flex-col items-start justify-start gap-2.5">
-								<div className="justify-start self-stretch text-base leading-tight font-semibold text-neutral-800">
-                  Ciranca
-								</div>
-								<div className="justify-center self-stretch text-sm leading-snug font-normal text-neutral-800">
-                  With TrailHive, youll have access to a comprehensive database
-                  of trails, complete with detailed information on ratings,
-                  difficulty levels, and user reviews.{" "}
+							<div className="flex flex-col gap-2.5 w-full">
+								<div className="text-base font-semibold text-neutral-800">Ciranca</div>
+								<div className="text-sm font-normal text-neutral-800">
+                With TrailHive, you&apos;ll have access to a comprehensive database of trails, complete with detailed information on ratings, difficulty levels, and user reviews.
 								</div>
 							</div>
 						</div>
-						<div className="inline-flex flex-col items-start justify-start gap-4">
-							<div className="inline-flex w-60 items-start justify-start">
+						{/* Card 2 */}
+						<div className="flex flex-col items-start gap-4">
+							<div className="w-full">
 								<Image
 									alt="wisata"
 									width={240}
 									height={311}
-									className="h-80 w-60 rounded-[20px]"
 									src="https://picsum.photos/240/311"
+									className="rounded-[20px] object-cover w-full h-64 sm:h-72"
+									priority
 								/>
 							</div>
-							<div className="flex w-60 flex-col items-start justify-start gap-2.5">
-								<div className="justify-start self-stretch text-base leading-tight font-semibold text-neutral-800">
-                  Sawah Bengkok
-								</div>
-								<div className="justify-center self-stretch text-sm leading-snug font-normal text-neutral-800">
-                  With TrailHive, youll have access to a comprehensive database
-                  of trails, complete with detailed information on ratings,
-                  difficulty levels, and user reviews.{" "}
+							<div className="flex flex-col gap-2.5 w-full">
+								<div className="text-base font-semibold text-neutral-800">Sawah Bengkok</div>
+								<div className="text-sm font-normal text-neutral-800">
+                With TrailHive, you&apos;ll have access to a comprehensive database of trails, complete with detailed information on ratings, difficulty levels, and user reviews.
 								</div>
 							</div>
 						</div>
-						<div className="inline-flex flex-col items-start justify-start gap-4">
-							<div className="inline-flex w-60 items-start justify-start">
+						{/* Card 3 */}
+						<div className="flex flex-col items-start gap-4">
+							<div className="w-full">
 								<Image
 									alt="wisata"
 									width={240}
 									height={311}
-									className="h-80 w-60 rounded-[20px]"
 									src="https://picsum.photos/240/311"
+									className="rounded-[20px] object-cover w-full h-64 sm:h-72"
+									priority
 								/>
 							</div>
-							<div className="flex w-60 flex-col items-start justify-start gap-2.5">
-								<div className="justify-start self-stretch text-base leading-tight font-semibold text-neutral-800">
-                  Access nature
-								</div>
-								<div className="justify-center self-stretch text-sm leading-snug font-normal text-neutral-800">
-                  With TrailHive, youll have access to a comprehensive database
-                  of trails, complete with detailed information on ratings,
-                  difficulty levels, and user reviews.{" "}
+							<div className="flex flex-col gap-2.5 w-full">
+								<div className="text-base font-semibold text-neutral-800">Access nature</div>
+								<div className="text-sm font-normal text-neutral-800">
+                With TrailHive, you&apos;ll have access to a comprehensive database of trails, complete with detailed information on ratings, difficulty levels, and user reviews.
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			</section>
+			<section className="section-umkm w-full  px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20 flex flex-col items-center justify-center">
+				<div className="flex flex-col items-center md:items-start justify-center gap-12 sm:gap-16 md:gap-20 max-w-5xl w-full">
+					{/* Judul kecil */}
+					<div className="text-sm sm:text-base font-normal tracking-wide text-lime-400 uppercase">
+          Kata pengunjung
+					</div>
+					{/* Kutipan */}
+					<div className="text-center md:text-left text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-lime-400 leading-snug sm:leading-snug md:leading-snug">
+          Pepohonan yang rindang, udara sejuk, dan aliran air yang jernih jadi
+          nuansa menenangkan di Situ Ciranca. Tempat ini benar-benar hidden gem
+          untuk menenangkan diri dari aktivitas kota.
+					</div>
+					{/* Nama */}
+					<div className="text-lg sm:text-xl md:text-2xl font-bold text-lime-400">
+          - John R.
+					</div>
+				</div>
+			</section>
 		</div>
 	);
 }
