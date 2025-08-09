@@ -3,6 +3,7 @@ import { PROGRAM_DETAIL_QUERY } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { PortableText } from "@portabletext/react";
 export const revalidate = 60;
 export default async function ProgramDetailPage(
 	{ params }: { params: Promise<{ slug: string }> } // ✅ params adalah Promise
@@ -31,7 +32,7 @@ export default async function ProgramDetailPage(
 			<p className="text-neutral-700 mb-8">{program.description}</p>
 			{program.detail && (
 				<article className="prose prose-lg max-w-none">
-					{/* <PortableText value={program.detail} /> */}
+					<PortableText value={program.detail} />
 				</article>
 			)}
 		</main>
