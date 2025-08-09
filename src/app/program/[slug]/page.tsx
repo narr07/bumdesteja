@@ -1,12 +1,14 @@
-// src/app/program/[slug]/page.tsx
 import { client } from "@/sanity/lib/client";
 import { PROGRAM_DETAIL_QUERY } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 export const revalidate = 60;
-export default async function ProgramDetailPage({ params }: { params: { slug: string } }) {
-	const program = await client.fetch(PROGRAM_DETAIL_QUERY, { slug: params.slug });
+export default async function ProgramDetailPage(
+	{ params }: { params: Promise<{ slug: string }> } // ✅ params adalah Promise
+) {
+	const { slug } = await params; // ✅ tunggu promise-nya
+	const program = await client.fetch(PROGRAM_DETAIL_QUERY, { slug });
 	if (!program) {
 		notFound();
 	}
