@@ -4,15 +4,9 @@ import { PROGRAM_DETAIL_QUERY } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-// ISR 60 detik untuk halaman detail
 export const revalidate = 60;
-interface ProgramDetailProps {
-  params: { slug: string };
-}
-export default async function ProgramDetailPage({ params }: ProgramDetailProps) {
-	const program = await client.fetch(PROGRAM_DETAIL_QUERY, {
-		slug: params.slug,
-	});
+export default async function ProgramDetailPage({ params }: { params: { slug: string } }) {
+	const program = await client.fetch(PROGRAM_DETAIL_QUERY, { slug: params.slug });
 	if (!program) {
 		notFound();
 	}
@@ -33,10 +27,8 @@ export default async function ProgramDetailPage({ params }: ProgramDetailProps) 
 				</div>
 			)}
 			<p className="text-neutral-700 mb-8">{program.description}</p>
-			{/* Render rich text detail */}
 			{program.detail && (
-				<article className="prose  prose-lg max-w-none">
-					{/* Jika mau render rich text pake PortableText */}
+				<article className="prose prose-lg max-w-none">
 					{/* <PortableText value={program.detail} /> */}
 				</article>
 			)}
