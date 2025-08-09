@@ -1,12 +1,12 @@
 // src/app/components/HeroSection.tsx
 import Image from "next/image";
-import { client } from "@/sanity/lib/client";
 import { HOME_HERO_QUERY } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
+import { sanityFetch } from "@/sanity/lib/live";
 export default async function HeroSection() {
-	const hero = await client.fetch(HOME_HERO_QUERY);
-	const imageUrl = hero?.image
-		? urlFor(hero.image).height(800).width(800).quality(85).auto("format").url()
+	const hero = await sanityFetch({ query: HOME_HERO_QUERY });
+	const imageUrl = hero?.data?.image
+		? urlFor(hero.data.image).height(800).width(800).quality(85).auto("format").url()
 		: "https://placehold.co/800x800/png";
 	return (
 		<div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 md:py-24 lg:px-8">
@@ -16,17 +16,17 @@ export default async function HeroSection() {
 				{/* Text/CTA */}
 				<div className="flex-1 flex flex-col items-center md:items-start justify-center gap-8 w-full">
 					<h1 className="w-full text-center md:text-left text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black text-lime-400 leading-tight">
-						{hero?.heading}
+						{hero?.data?.heading}
 					</h1>
 					<p className="w-full text-center md:text-left text-base sm:text-lg md:text-xl leading-7 font-normal text-emerald-100">
-						{hero?.subheading}
+						{hero?.data?.subheading}
 					</p>
 					<div className="w-full flex justify-center md:justify-start">
 						<a
-							href={hero?.cta?.link}
+							href={hero?.data?.cta?.link}
 							className="bg-lemon font-semibold text-zaitun px-6 py-3 rounded shadow hover:bg-lemon/80 transition"
 						>
-							{hero?.cta?.text || "Download the app"}
+							{hero?.data?.cta?.text || "Download the app"}
 						</a>
 					</div>
 				</div>
