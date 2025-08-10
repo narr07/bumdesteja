@@ -12,6 +12,143 @@
  * ---------------------------------------------------------------------------------
  */
 // Source: schema.json
+export type Wisata = {
+  _id: string;
+  _type: "wisata";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  slug?: Slug;
+  operationalDays?: string;
+  operationalHours?: string;
+  ticketPrice?: string;
+  images?: Array<{
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+    _key: string;
+  }>;
+  address?: string;
+  description?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+};
+export type Umkm = {
+  _id: string;
+  _type: "umkm";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  name?: string;
+  slug?: Slug;
+  description?: string;
+  profile?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+  contact?: {
+    address?: string;
+    phone?: string;
+    email?: string;
+    website?: string;
+  };
+  sector?:
+    | "kuliner"
+    | "fashion"
+    | "kerajinan"
+    | "teknologi"
+    | "jasa"
+    | "lainnya";
+};
+export type Program = {
+  _id: string;
+  _type: "program";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  title?: string;
+  slug?: Slug;
+  description?: string;
+  detail?: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }>;
+};
 export type Home = {
   _id: string;
   _type: "home";
@@ -169,6 +306,9 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 export type AllSanitySchemaTypes =
+  | Wisata
+  | Umkm
+  | Program
   | Home
   | SanityImagePaletteSwatch
   | SanityImagePalette
@@ -205,10 +345,166 @@ export type HOME_HERO_QUERYResult = {
     link?: string;
   } | null;
 } | null;
+// Variable: PROGRAM_LIST_QUERY
+// Query: *[_type == "program"] | order(_createdAt desc) {    title,    "slug": slug.current,    description,    image  }
+export type PROGRAM_LIST_QUERYResult = Array<{
+  title: string | null;
+  slug: string | null;
+  description: string | null;
+  image: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+}>;
+// Variable: PROGRAM_DETAIL_QUERY
+// Query: *[_type == "program" && slug.current == $slug][0] {    title,    description,    image,    detail  }
+export type PROGRAM_DETAIL_QUERYResult = {
+  title: string | null;
+  description: string | null;
+  image: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+  detail: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }> | null;
+} | null;
+// Variable: UMKM_LIST_QUERY
+// Query: *[_type == "umkm"] | order(_createdAt desc) {    name,    "slug": slug.current,    description,    image,    sector  }
+export type UMKM_LIST_QUERYResult = Array<{
+  name: string | null;
+  slug: string | null;
+  description: string | null;
+  image: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+  sector:
+    | "fashion"
+    | "jasa"
+    | "kerajinan"
+    | "kuliner"
+    | "lainnya"
+    | "teknologi"
+    | null;
+}>;
+// Variable: UMKM_DETAIL_QUERY
+// Query: *[_type == "umkm" && slug.current == $slug][0] {    name,    description,    image,    profile,    sector,    contact  }
+export type UMKM_DETAIL_QUERYResult = {
+  name: string | null;
+  description: string | null;
+  image: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+  profile: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }> | null;
+  sector:
+    | "fashion"
+    | "jasa"
+    | "kerajinan"
+    | "kuliner"
+    | "lainnya"
+    | "teknologi"
+    | null;
+  contact: {
+    address?: string;
+    phone?: string;
+    email?: string;
+    website?: string;
+  } | null;
+} | null;
+// Variable: UMKM_THREE_QUERY
+// Query: *[_type == "umkm"] | order(_createdAt desc)[0...8] {    name,    "slug": slug.current,    description,    image  }
+export type UMKM_THREE_QUERYResult = Array<{
+  name: string | null;
+  slug: string | null;
+  description: string | null;
+  image: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
+}>;
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     "*[_type == \"home\"][0].hero{\n  heading,\n  subheading,\n  image,\n  cta\n}": HOME_HERO_QUERYResult;
+    "\n  *[_type == \"program\"] | order(_createdAt desc) {\n    title,\n    \"slug\": slug.current,\n    description,\n    image\n  }\n": PROGRAM_LIST_QUERYResult;
+    "\n  *[_type == \"program\" && slug.current == $slug][0] {\n    title,\n    description,\n    image,\n    detail\n  }\n": PROGRAM_DETAIL_QUERYResult;
+    "\n  *[_type == \"umkm\"] | order(_createdAt desc) {\n    name,\n    \"slug\": slug.current,\n    description,\n    image,\n    sector\n  }\n": UMKM_LIST_QUERYResult;
+    "\n  *[_type == \"umkm\" && slug.current == $slug][0] {\n    name,\n    description,\n    image,\n    profile,\n    sector,\n    contact\n  }\n": UMKM_DETAIL_QUERYResult;
+    "\n  *[_type == \"umkm\"] | order(_createdAt desc)[0...8] {\n    name,\n    \"slug\": slug.current,\n    description,\n    image\n  }\n": UMKM_THREE_QUERYResult;
   }
 }

@@ -22,7 +22,7 @@ export const programType = defineType({
 			name: "slug",
 			title: "Slug",
 			type: "slug",
-			options: { source: "title", maxLength: 96 }
+			options: { source: "title", maxLength: 96 },
 		}),
 		// Deskripsi singkat untuk card/list
 		defineField({
@@ -37,9 +37,9 @@ export const programType = defineType({
 			type: "array",
 			of: [
 				defineArrayMember({
-					type: "block" // Rich text block, bisa gambar, heading, dsb.
+					type: "block", // Rich text block, bisa gambar, heading, dsb.
 				}),
-			]
-		})
-	]
+			],
+		}),
+	],
 });

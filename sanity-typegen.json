@@ -1,4 +1,3 @@
-
 {
   "path": "./src/**/*.{ts,tsx,js,jsx}",
   "schema": "./src/sanity/extract.json",

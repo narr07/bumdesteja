@@ -11,27 +11,28 @@ import { apiVersion, dataset, projectId } from "./src/sanity/env";
 import { schema } from "./src/sanity/schemaTypes";
 import { structure } from "./src/sanity/structure";
 export default defineConfig({
-	basePath: "/studio",
-	projectId,
-	dataset,
-	// Add and edit the content schema in the './sanity/schemaTypes' folder
-	schema,
-	plugins: [
-		structureTool({ structure }),
-		// Vision is for querying with GROQ from inside the Studio
-		// https://www.sanity.io/docs/the-vision-plugin
-		visionTool({ defaultApiVersion: apiVersion }),
-		presentationTool({
-			previewUrl: {
-				origin: process.env.SANITY_STUDIO_PREVIEW_ORIGIN,
-				preview: "/",
-				previewMode: {
-					enable: "/api/draft-mode/enable",
-				},
-			},
-		}),
-	],
-	document: {
-		newDocumentOptions: (prev) => prev.filter((item) => item.templateId !== "home"),
-	},
+  basePath: "/studio",
+  projectId,
+  dataset,
+  // Add and edit the content schema in the './sanity/schemaTypes' folder
+  schema,
+  plugins: [
+    structureTool({ structure }),
+    // Vision is for querying with GROQ from inside the Studio
+    // https://www.sanity.io/docs/the-vision-plugin
+    visionTool({ defaultApiVersion: apiVersion }),
+    presentationTool({
+      previewUrl: {
+        origin: process.env.SANITY_STUDIO_PREVIEW_ORIGIN,
+        preview: "/",
+        previewMode: {
+          enable: "/api/draft-mode/enable",
+        },
+      },
+    }),
+  ],
+  document: {
+    newDocumentOptions: (prev) =>
+      prev.filter((item) => item.templateId !== "home"),
+  },
 });

@@ -20,10 +20,10 @@ export const structure: StructureResolver = (S) =>
 			...S.documentTypeListItems().filter(
 				(item) =>
 					item.getId() &&
-					![
-						// Tambahkan tipe lain jika ingin di-ignore juga
-						"home",
-					].includes(item.getId()!)
+          ![
+          	// Tambahkan tipe lain jika ingin di-ignore juga
+          	"home",
+          ].includes(item.getId()!)
 			),
 			// ...existing code...
 		]);

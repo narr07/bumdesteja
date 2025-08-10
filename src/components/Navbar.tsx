@@ -1,3 +1,4 @@
+// src/components/Navbar.tsx
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -5,11 +6,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { Menu, X } from "lucide-react";
-import {
-	Popover,
-	PopoverTrigger,
-	PopoverContent,
-} from "./ui/popover";
+import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 export default function Navbar() {
 	const pathname = usePathname();
 	const links = [
@@ -22,7 +19,7 @@ export default function Navbar() {
 	const [open, setOpen] = useState(false);
 	return (
 		<div className="fixed top-0 left-0 z-50 w-full">
-			<nav className="h-16 flex items-center justify-between rounded-b-[40px] bg-pastel px-4 md:px-24 py-2 text-zaitun shadow-md">
+			<nav className="flex h-16 items-center justify-between rounded-b-[40px] bg-pastel px-4 py-2 text-zaitun shadow-md md:px-24">
 				<Link href="/">
 					<Image
 						src="/LogoWebFull.svg"
@@ -34,39 +31,59 @@ export default function Navbar() {
 						className="block"
 					/>
 				</Link>
-				<div className="hidden md:flex space-x-[32px]">
-					{links.map((link) => (
-						<Link key={link.href} href={link.href}>
-							<Button variant={pathname === link.href ? "default" : "ghost"} className="text-lg font-semibold">
-								{link.label}
+				<div className="hidden space-x-[32px] md:flex">
+					{links.map((link) => {
+						// Untuk homepage, hanya match jika pathname === '/'
+						const isActive =
+              link.href === "/"
+              	? pathname === "/"
+              	: pathname.startsWith(link.href);
+						return (
+							<Button
+								asChild
+								key={link.href}
+								variant={isActive ? "lemon" : "ghost"}
+								className="text-lg font-semibold"
+							>
+								<Link href={link.href}>{link.label}</Link>
 							</Button>
-						</Link>
-					))}
+						);
+					})}
 				</div>
 				{/* MOBILE NAV */}
 				<div className="md:hidden">
 					<Popover open={open} onOpenChange={setOpen}>
 						<PopoverTrigger asChild>
 							<Button size="icon" variant="ghost">
-								{open ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
+								{open ? (
+									<X className="h-7 w-7" />
+								) : (
+									<Menu className="h-7 w-7" />
+								)}
 							</Button>
 						</PopoverTrigger>
 						<PopoverContent
 							align="end"
 							sideOffset={8}
-							className="w-48 flex flex-col items-center"
+							className="flex w-48 flex-col items-center"
 						>
-							{links.map((link) => (
-								<Link key={link.href} href={link.href}>
+							{links.map((link) => {
+								const isActive =
+                  link.href === "/"
+                  	? pathname === "/"
+                  	: pathname.startsWith(link.href);
+								return (
 									<Button
+										asChild
+										key={link.href}
 										onClick={() => setOpen(false)}
-										variant={pathname === link.href ? "default" : "ghost"}
-										className="w-full text-base justify-start"
+										variant={isActive ? "lemon" : "ghost"}
+										className="w-full justify-start text-base"
 									>
-										{link.label}
+										<Link href={link.href}>{link.label}</Link>
 									</Button>
-								</Link>
-							))}
+								);
+							})}
 						</PopoverContent>
 					</Popover>
 				</div>

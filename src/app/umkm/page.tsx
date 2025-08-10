@@ -1,25 +1,9 @@
-"use client";
-import { useEffect, useRef } from "react";
-import { animate, createScope } from "animejs";
-export default function UMKM() {
-	const mainRef = useRef<HTMLDivElement>(null);
-	const scope = useRef<ReturnType<typeof createScope> | null>(null);
-	useEffect(() => {
-		scope.current = createScope({ root: mainRef });
-		if (mainRef.current) {
-			animate(mainRef.current, {
-				opacity: [0, 1],
-				translateY: [40, 0],
-				duration: 900,
-				easing: "out(3)",
-			});
-		}
-		return () => scope.current?.revert();
-	}, []);
-	return (
-		<main ref={mainRef} style={{ padding: 32, opacity: 0 }}>
-			<h1>UMKM</h1>
-			<p>Halaman informasi UMKM.</p>
-		</main>
-	);
+// src/app/umkm/page.tsx
+import { client } from "@/sanity/lib/client";
+import { UMKM_LIST_QUERY } from "@/sanity/lib/queries";
+import UmkmList from "../../components/UmkmList";
+export const revalidate = 60; // ini valid di server!
+export default async function UmkmPage() {
+	const umkmList = await client.fetch(UMKM_LIST_QUERY);
+	return <UmkmList umkmList={umkmList} />;
 }

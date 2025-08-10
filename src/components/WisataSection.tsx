@@ -1,98 +1,79 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// src/app/components/WisataSection.tsx
+import { client } from "@/sanity/lib/client";
+import { WISATA_THREE_QUERY } from "@/sanity/lib/queries";
+import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
-export default function WisataSection() {
+import Link from "next/link";
+export const revalidate = 60; // ISR tiap 1 menit
+export default async function WisataSection() {
+	const wisataList = await client.fetch(WISATA_THREE_QUERY);
 	return (
 		<div>
-			<section className="mx-auto  bg-pastel rounded-[40px] ">
-				<div className="flex flex-col md:flex-row px-4 py-12 sm:px-6 lg:px-8 items-center md:items-start gap-10 md:gap-16 mx-auto max-w-7xl    md:py-16 w-full">
+			<section className="mx-auto rounded-[40px] bg-pastel">
+				<div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-10 px-4 py-12 sm:px-6 md:flex-row md:items-start md:gap-16 md:py-16 lg:px-8">
 					{/* Side (Text/CTA) */}
-					<div className="w-full md:w-2/5 flex flex-col items-center md:items-start justify-center gap-6">
-						<div className="uppercase text-sm font-normal tracking-wide text-neutral-800">
-            layanan
+					<div className="flex w-full flex-col items-center justify-center gap-6 md:w-2/5 md:items-start">
+						<div className="text-sm font-normal tracking-wide text-neutral-800 uppercase">
+              layanan
 						</div>
-						<div className="w-full text-center md:text-left text-3xl sm:text-4xl lg:text-5xl font-semibold text-neutral-800">
-            Wisata Desa
+						<div className="w-full text-center text-3xl font-semibold text-neutral-800 sm:text-4xl md:text-left lg:text-5xl">
+              Wisata Desa
 						</div>
-						<a href="#" className="mt-4 inline-flex h-9 items-center gap-2 rounded-[50px] bg-neutral-800 px-6 py-2 text-base font-normal text-emerald-100 hover:bg-neutral-700 transition">
-            Baca Selengkapnya
-						</a>
+						<Link
+							href="/wisata"
+							className="mt-4 inline-flex h-9 items-center gap-2 rounded-[50px] bg-neutral-800 px-6 py-2 text-base font-normal text-emerald-100 transition hover:bg-neutral-700"
+						>
+              Baca Selengkapnya
+						</Link>
 					</div>
 					{/* Wisata Cards */}
-					<div className="w-full md:w-3/5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-						{/* Card 1 */}
-						<div className="flex flex-col items-start gap-4">
-							<div className="w-full">
-								<Image
-									alt="wisata"
-									width={240}
-									height={311}
-									src="https://picsum.photos/240/311"
-									className="rounded-[20px] object-cover w-full h-64 sm:h-72"
-									priority
-								/>
-							</div>
-							<div className="flex flex-col gap-2.5 w-full">
-								<div className="text-base font-semibold text-neutral-800">Ciranca</div>
-								<div className="text-sm font-normal text-neutral-800">
-                With TrailHive, you&apos;ll have access to a comprehensive database of trails, complete with detailed information on ratings, difficulty levels, and user reviews.
+					<div className="grid w-full grid-cols-1 gap-8 sm:grid-cols-2 md:w-3/5 md:grid-cols-3">
+						{wisataList.map((wisata: any, idx: number) => (
+							<div key={idx} className="flex flex-col items-start gap-4">
+								<div className="w-full">
+									{wisata.images?.[0] && (
+										<Image
+											alt={wisata.name}
+											width={240}
+											height={311}
+											src={urlFor(wisata.images[0])
+												.width(240)
+												.height(311)
+												.url()}
+											className="h-64 w-full rounded-[20px] object-cover sm:h-72"
+											priority
+										/>
+									)}
+								</div>
+								<div className="flex w-full flex-col gap-2.5">
+									<div className="text-base font-semibold text-neutral-800">
+										{wisata.name}
+									</div>
+									<div className="line-clamp-3 text-sm font-normal text-neutral-800">
+										{wisata.description
+											? (wisata.description[0]?.children?.[0]?.text ?? "")
+											: ""}
+									</div>
 								</div>
 							</div>
-						</div>
-						{/* Card 2 */}
-						<div className="flex flex-col items-start gap-4">
-							<div className="w-full">
-								<Image
-									alt="wisata"
-									width={240}
-									height={311}
-									src="https://picsum.photos/240/311"
-									className="rounded-[20px] object-cover w-full h-64 sm:h-72"
-									priority
-								/>
-							</div>
-							<div className="flex flex-col gap-2.5 w-full">
-								<div className="text-base font-semibold text-neutral-800">Sawah Bengkok</div>
-								<div className="text-sm font-normal text-neutral-800">
-                With TrailHive, you&apos;ll have access to a comprehensive database of trails, complete with detailed information on ratings, difficulty levels, and user reviews.
-								</div>
-							</div>
-						</div>
-						{/* Card 3 */}
-						<div className="flex flex-col items-start gap-4">
-							<div className="w-full">
-								<Image
-									alt="wisata"
-									width={240}
-									height={311}
-									src="https://picsum.photos/240/311"
-									className="rounded-[20px] object-cover w-full h-64 sm:h-72"
-									priority
-								/>
-							</div>
-							<div className="flex flex-col gap-2.5 w-full">
-								<div className="text-base font-semibold text-neutral-800">Access nature</div>
-								<div className="text-sm font-normal text-neutral-800">
-                With TrailHive, you&apos;ll have access to a comprehensive database of trails, complete with detailed information on ratings, difficulty levels, and user reviews.
-								</div>
-							</div>
-						</div>
+						))}
 					</div>
 				</div>
 			</section>
-			<section className="section-umkm w-full  px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20 flex flex-col items-center justify-center">
-				<div className="flex flex-col items-center md:items-start justify-center gap-12 sm:gap-16 md:gap-20 max-w-5xl w-full">
-					{/* Judul kecil */}
-					<div className="text-sm sm:text-base font-normal tracking-wide text-lime-400 uppercase">
-          Kata pengunjung
+			{/* Testimonial Section (Tetap) */}
+			<section className="section-umkm flex w-full flex-col items-center justify-center px-4 py-12 sm:px-6 sm:py-16 md:py-20 lg:px-8">
+				<div className="flex w-full max-w-5xl flex-col items-center justify-center gap-12 sm:gap-16 md:items-start md:gap-20">
+					<div className="text-sm font-normal tracking-wide text-lime-400 uppercase sm:text-base">
+            Kata pengunjung
 					</div>
-					{/* Kutipan */}
-					<div className="text-center md:text-left text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-lime-400 leading-snug sm:leading-snug md:leading-snug">
-          Pepohonan yang rindang, udara sejuk, dan aliran air yang jernih jadi
-          nuansa menenangkan di Situ Ciranca. Tempat ini benar-benar hidden gem
-          untuk menenangkan diri dari aktivitas kota.
+					<div className="text-center text-2xl leading-snug font-bold text-lime-400 sm:text-3xl sm:leading-snug md:text-left md:text-4xl md:leading-snug lg:text-5xl">
+            Pepohonan yang rindang, udara sejuk, dan aliran air yang jernih jadi
+            nuansa menenangkan di Situ Ciranca. Tempat ini benar-benar hidden
+            gem untuk menenangkan diri dari aktivitas kota.
 					</div>
-					{/* Nama */}
-					<div className="text-lg sm:text-xl md:text-2xl font-bold text-lime-400">
-          - John R.
+					<div className="text-lg font-bold text-lime-400 sm:text-xl md:text-2xl">
+            - John R.
 					</div>
 				</div>
 			</section>

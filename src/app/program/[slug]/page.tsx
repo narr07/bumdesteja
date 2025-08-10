@@ -1,4 +1,4 @@
-// ...existing code...
+// src/app/program/[slug]/page.tsx
 import { client } from "@/sanity/lib/client";
 import { PROGRAM_DETAIL_QUERY } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
@@ -8,8 +8,14 @@ import { PortableText } from "@portabletext/react";
 import type { Metadata } from "next";
 export const revalidate = 60;
 // SEO dinamis untuk halaman program detail
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-	const program = await client.fetch(PROGRAM_DETAIL_QUERY, { slug: params.slug });
+export async function generateMetadata({
+	params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
+	const program = await client.fetch(PROGRAM_DETAIL_QUERY, {
+		slug: params.slug,
+	});
 	if (!program) return {};
 	return {
 		title: program.title,
@@ -17,17 +23,30 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 		openGraph: {
 			title: program.title,
 			description: program.description,
-			images: program.image ? [{ url: urlFor(program.image).width(800).height(500).url(), alt: program.title }] : [],
+			images: program.image
+				? [
+					{
+						url: urlFor(program.image).width(800).height(500).url(),
+						alt: program.title,
+					},
+				]
+				: [],
 		},
 		twitter: {
 			card: "summary_large_image",
 			title: program.title,
 			description: program.description,
-			images: program.image ? [urlFor(program.image).width(800).height(500).url()] : [],
+			images: program.image
+				? [urlFor(program.image).width(800).height(500).url()]
+				: [],
 		},
 	};
 }
-export default async function ProgramDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ProgramDetailPage({
+	params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
 	const { slug } = await params;
 	const program = await client.fetch(PROGRAM_DETAIL_QUERY, { slug });
 	if (!program) {
@@ -35,7 +54,7 @@ export default async function ProgramDetailPage({ params }: { params: Promise<{ 
 	}
 	return (
 		<main className="mx-auto max-w-4xl px-4 py-12">
-			<h1 className="text-3xl md:text-4xl font-bold text-lime-500 mb-6">
+			<h1 className="mb-6 text-3xl font-bold text-lime-500 md:text-4xl">
 				{program.title}
 			</h1>
 			{program.image && (
@@ -45,11 +64,11 @@ export default async function ProgramDetailPage({ params }: { params: Promise<{ 
 						alt={program.title}
 						width={800}
 						height={500}
-						className="rounded-2xl object-cover w-full"
+						className="w-full rounded-2xl object-cover"
 					/>
 				</div>
 			)}
-			<p className="text-neutral-700 mb-8">{program.description}</p>
+			<p className="mb-8 text-neutral-700">{program.description}</p>
 			{program.detail && (
 				<article className="prose prose-lg max-w-none">
 					<PortableText value={program.detail} />

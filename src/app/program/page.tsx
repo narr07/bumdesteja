@@ -13,34 +13,34 @@ export default async function ProgramPage() {
 	const programs = await client.fetch(PROGRAM_LIST_QUERY);
 	return (
 		<main className="mx-auto max-w-6xl px-4 pb-20">
-			<h1 className="text-3xl md:text-4xl font-bold text-lime-500 mb-3">
+			<h1 className="mb-3 text-3xl font-bold text-lime-500 md:text-4xl">
         Program Bumdes
 			</h1>
 			<p className="mb-8 text-neutral-700">
         Berikut daftar program unggulan Bumdes Desa Ciranca:
 			</p>
 			{/* Grid 1 kolom mobile, 2 kolom desktop */}
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+			<div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 				{programs?.map((program: any, idx: number) => (
 					<Card
 						key={idx}
-						className="group rounded-2xl shadow-md bg-pastel hover:bg-lemon flex flex-col justify-between hover:shadow-lg transition"
+						className="group flex flex-col justify-between rounded-2xl bg-pastel shadow-md transition hover:bg-lemon hover:shadow-lg"
 					>
-						<CardContent className="p-6 flex-1 flex flex-col">
+						<CardContent className="flex flex-1 flex-col p-6">
 							{program.image && (
 								<Image
 									src={urlFor(program.image).width(500).height(300).url()}
 									alt={program.title}
 									width={500}
 									height={300}
-									className="rounded-xl object-cover mb-4"
+									className="mb-4 rounded-xl object-cover"
 									priority
 								/>
 							)}
-							<h3 className="font-bold text-lg mb-2 text-zaitun">
+							<h3 className="mb-2 text-lg font-bold text-zaitun">
 								{program.title}
 							</h3>
-							<p className="text-sm text-neutral-600 flex-1">
+							<p className="flex-1 text-sm text-neutral-600">
 								{program.description}
 							</p>
 						</CardContent>
@@ -50,16 +50,14 @@ export default async function ProgramPage() {
 								asChild
 								variant="lemon"
 								className="
-    font-semibold text-zaitun
+    w-full font-semibold
+    text-zaitun
     transition-colors
     group-hover:bg-zaitun
     group-hover:text-lemon
-    w-full
   "
 							>
-								<Link href={`/program/${program.slug}`}>
-    Detail
-								</Link>
+								<Link href={`/program/${program.slug}`}>Detail</Link>
 							</Button>
 						</CardFooter>
 					</Card>

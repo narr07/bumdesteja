@@ -1,5 +1,5 @@
 // src/sanity/schemaTypes/homeType.ts
-import { defineType, defineField, defineArrayMember } from "sanity"
+import { defineType, defineField, defineArrayMember } from "sanity";
 export const homeType = defineType({
 	name: "home",
 	title: "Home",
@@ -62,7 +62,12 @@ export const homeType = defineType({
 				defineArrayMember({
 					type: "object",
 					fields: [
-						defineField({ name: "logo", title: "Logo", type: "image", options: { hotspot: true } }),
+						defineField({
+							name: "logo",
+							title: "Logo",
+							type: "image",
+							options: { hotspot: true },
+						}),
 						defineField({ name: "link", title: "Link", type: "url" }),
 						defineField({ name: "nama", title: "Nama", type: "string" }),
 					],
@@ -70,4 +75,4 @@ export const homeType = defineType({
 			],
 		}),
 	],
-})
+});
