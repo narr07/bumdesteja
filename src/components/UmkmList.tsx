@@ -71,6 +71,8 @@ export default function UmkmList({ umkmList }: { umkmList: any[] }) {
 									width={500}
 									height={300}
 									className="mb-4 rounded-xl object-cover"
+									placeholder="blur"
+									blurDataURL={umkm.image?.asset?.metadata?.lqip}
 									priority
 								/>
 							)}

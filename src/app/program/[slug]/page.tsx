@@ -6,7 +6,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PortableText } from "@portabletext/react";
 import type { Metadata } from "next";
-export const revalidate = 60;
+export const revalidate = 30;
 // ✅ Metadata dinamis sesuai slug
 export async function generateMetadata(
 	{ params }: { params: Promise<{ slug: string }> }
@@ -71,6 +71,8 @@ export default async function ProgramDetailPage(
 						width={800}
 						height={500}
 						className="rounded-2xl object-cover w-full"
+						placeholder="blur"
+						blurDataURL={program.image?.asset?.metadata?.lqip}
 					/>
 				</div>
 			)}

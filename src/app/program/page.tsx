@@ -34,6 +34,8 @@ export default async function ProgramPage() {
 									width={500}
 									height={300}
 									className="mb-4 rounded-xl object-cover"
+									placeholder="blur"
+									blurDataURL={program.image?.asset?.metadata?.lqip}
 									priority
 								/>
 							)}

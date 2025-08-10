@@ -5,7 +5,62 @@ import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PortableText } from "@portabletext/react";
+import type { Metadata } from "next";
 export const revalidate = 60;
+function portableTextToPlainText(blocks: any[]): string {
+	if (!Array.isArray(blocks)) return "";
+	return blocks
+		.filter(b => b._type === "block" && Array.isArray(b.children))
+		.map(b => b.children.map((c: any) => c.text).join(""))
+		.join("\n")
+		.replace(/\s+/g, " ")
+		.trim();
+}
+export async function generateMetadata(
+	{ params }: { params: Promise<{ slug: string }> }
+): Promise<Metadata> {
+	const { slug } = await params;
+	const wisata = await client.fetch(WISATA_DETAIL_QUERY, { slug });
+	if (!wisata) {
+		return {
+			title: "Wisata Tidak Ditemukan",
+			description: ""
+		};
+	}
+	const plainDesc = wisata.description
+		? portableTextToPlainText(wisata.description).slice(0, 160)
+		: "";
+	const firstImage = Array.isArray(wisata.images) && wisata.images.length > 0
+		? wisata.images[0]
+		: null;
+	const ogImage = firstImage
+		? [{
+			url: urlFor(firstImage).width(1200).height(630).url(),
+			width: 1200,
+			height: 630,
+			alt: wisata.name ?? ""
+		}]
+		: [];
+	const twitterImages = firstImage
+		? [urlFor(firstImage).width(800).height(500).url()]
+		: [];
+	return {
+		title: wisata.name ?? "",
+		description: plainDesc,
+		openGraph: {
+			title: wisata.name ?? "",
+			description: plainDesc,
+			url: `/wisata/${slug}`,
+			images: ogImage
+		},
+		twitter: {
+			card: "summary_large_image",
+			title: wisata.name ?? "",
+			description: plainDesc,
+			images: twitterImages
+		}
+	};
+}
 export default async function WisataDetailPage(
 	{ params }: { params: Promise<{ slug: string }> }
 ) {
@@ -23,10 +78,12 @@ export default async function WisataDetailPage(
 						<Image
 							key={i}
 							src={urlFor(img).width(800).height(500).url()}
-							alt={`${wisata.name} - ${i}`}
+							alt={`${wisata.name} - ${i + 1}`}
 							width={800}
 							height={500}
 							className="h-64 w-full rounded-xl object-cover"
+							placeholder="blur"
+							blurDataURL={img?.asset?.metadata?.lqip}
 						/>
 					))}
 				</div>

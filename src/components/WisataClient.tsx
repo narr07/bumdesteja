@@ -45,6 +45,8 @@ export default function WisataClient({ wisataList }: { wisataList: any[] }) {
 									width={500}
 									height={300}
 									className="mb-4 rounded-xl object-cover"
+									placeholder="blur"
+									blurDataURL={item.images[0]?.asset?.metadata?.lqip}
 								/>
 							)}
 							<h3 className="mb-2 text-lg font-bold text-zaitun">
