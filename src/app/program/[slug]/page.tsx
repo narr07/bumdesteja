@@ -1,23 +1,68 @@
+// src/app/program/[slug]/page.tsx
 import { client } from "@/sanity/lib/client";
 import { PROGRAM_DETAIL_QUERY } from "@/sanity/lib/queries";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { PortableText } from "@portabletext/react";
+import type { Metadata } from "next";
 export const revalidate = 60;
+// ✅ Metadata dinamis sesuai slug
+export async function generateMetadata(
+	{ params }: { params: Promise<{ slug: string }> }
+): Promise<Metadata> {
+	const { slug } = await params;
+	const program = await client.fetch(PROGRAM_DETAIL_QUERY, { slug });
+	if (!program) {
+		return {
+			title: "Program Tidak Ditemukan",
+			description: "",
+		};
+	}
+	return {
+		title: program.title ?? "",
+		description: program.description ?? "",
+		openGraph: {
+			title: program.title ?? "",
+			description: program.description ?? "",
+			url: `/program/${slug}`,
+			images: program.image
+				? [
+					{
+						url: urlFor(program.image).width(1200).height(630).url(),
+						width: 1200,
+						height: 630,
+						alt: program.title ?? "",
+					},
+				]
+				: [],
+		},
+		twitter: {
+			card: "summary_large_image",
+			title: program.title ?? "",
+			description: program.description ?? "",
+			images: program.image
+				? [urlFor(program.image).width(800).height(500).url()]
+				: [],
+		},
+	};
+}
+// ✅ Page Detail
 export default async function ProgramDetailPage(
-	{ params }: { params: Promise<{ slug: string }> } // ✅ params adalah Promise
+	{ params }: { params: Promise<{ slug: string }> }
 ) {
-	const { slug } = await params; // ✅ tunggu promise-nya
+	const { slug } = await params;
 	const program = await client.fetch(PROGRAM_DETAIL_QUERY, { slug });
 	if (!program) {
 		notFound();
 	}
 	return (
 		<main className="mx-auto max-w-4xl px-4 py-12">
+			{/* Judul */}
 			<h1 className="text-3xl md:text-4xl font-bold text-lime-500 mb-6">
 				{program.title}
 			</h1>
+			{/* Gambar utama */}
 			{program.image && (
 				<div className="mb-6">
 					<Image
@@ -29,7 +74,9 @@ export default async function ProgramDetailPage(
 					/>
 				</div>
 			)}
+			{/* Deskripsi singkat */}
 			<p className="text-neutral-700 mb-8">{program.description}</p>
+			{/* Detail panjang */}
 			{program.detail && (
 				<article className="prose prose-lg max-w-none">
 					<PortableText value={program.detail} />
