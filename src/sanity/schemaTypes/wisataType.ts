@@ -66,6 +66,13 @@ export const wisataType = defineType({
 			type: "text",
 			rows: 2,
 		}),
+		defineField({
+			name: "location",
+			title: "Lokasi Koordinat Peta",
+			type: "geopoint", // native! latitude, longitude, altitude
+			description: "Input GPS lokasi wisata (latitude, longitude)",
+			validation: (Rule) => Rule.required(),
+		}),
 		// Deskripsi Lengkap
 		defineField({
 			name: "description",

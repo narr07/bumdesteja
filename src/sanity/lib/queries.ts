@@ -120,7 +120,8 @@ export const WISATA_DETAIL_QUERY = defineQuery(`
     ticketPrice,
     operationalDays,
     operationalHours,
-    description
+  description,
+  location
   }
 `);
 // Query: 3 Wisata terakhir

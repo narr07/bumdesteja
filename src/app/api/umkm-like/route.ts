@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ensureLikeTable, incrementLike, ensureLikeEventTable, countRecentLikesByIp, recordLikeEvent } from "@/lib/db";
+import {
+	ensureLikeTable,
+	incrementLike,
+	ensureLikeEventTable,
+	countRecentLikesByIp,
+	recordLikeEvent,
+} from "@/lib/db";
 // Increment like count for a UMKM document
 export async function POST(req: NextRequest) {
 	try {
@@ -8,11 +14,15 @@ export async function POST(req: NextRequest) {
 			return NextResponse.json({ error: "Missing UMKM ID" }, { status: 400 });
 		}
 		// Rate limit (max 10 likes per IP per hour)
-		const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+		const ip =
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
 		await ensureLikeEventTable();
 		const recent = await countRecentLikesByIp(ip, 60);
 		if (recent >= 10) {
-			return NextResponse.json({ error: "Rate limit exceeded (10 likes / hour)" }, { status: 429 });
+			return NextResponse.json(
+				{ error: "Rate limit exceeded (10 likes / hour)" },
+				{ status: 429 }
+			);
 		}
 		await ensureLikeTable();
 		const likes = await incrementLike(id);

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/components/UmkmList.tsx
 "use client";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import useSWR from "swr";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
@@ -26,13 +26,47 @@ const sectorOptions = [
 ];
 export default function UmkmList({ umkmList }: { umkmList: any[] }) {
 	const [sector, setSector] = useState("all");
-	const filteredList = useMemo(
-		() =>
-			sector === "all"
-				? umkmList
-				: umkmList.filter((umkm) => umkm.sector === sector),
-		[sector, umkmList]
+	const [sort, setSort] = useState("newest");
+	// Prepare IDs for bulk like fetch
+	const ids = useMemo(
+		() => umkmList.map((u) => u._id).filter(Boolean),
+		[umkmList]
 	);
+	const { data: bulkLikes, mutate: mutateBulk } = useSWR(
+		ids.length ? ["bulk-likes", ids] : null,
+		async ([, idList]) => {
+			const res = await fetch("/api/umkm-likes-bulk", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ ids: idList }),
+			});
+			return (await res.json()).likes as Record<string, number>;
+		},
+		{ revalidateOnFocus: true }
+	);
+	// Compose list with like counts (fallback to initial likes from server if any)
+	const enriched = useMemo(
+		() =>
+			umkmList.map((u) => ({
+				...u,
+				likeCount: bulkLikes?.[u._id] ?? u.likes ?? 0,
+			})),
+		[umkmList, bulkLikes]
+	);
+	const filteredList = useMemo(() => {
+		let base =
+      sector === "all" ? enriched : enriched.filter((u) => u.sector === sector);
+		if (sort === "likes-desc")
+			base = [...base].sort((a, b) => b.likeCount - a.likeCount);
+		return base;
+	}, [sector, sort, enriched]);
+	// Lightweight periodic refresh of bulk likes (optional)
+	useEffect(() => {
+		const t = setInterval(() => {
+			mutateBulk();
+		}, 30000);
+		return () => clearInterval(t);
+	}, [mutateBulk]);
 	return (
 		<main className="mx-auto max-w-6xl px-4 pb-20">
 			<h1 className="mb-3 text-3xl font-bold text-lime-600 md:text-4xl">
@@ -42,19 +76,32 @@ export default function UmkmList({ umkmList }: { umkmList: any[] }) {
         Berikut profil UMKM unggulan Desa Anda:
 			</p>
 			{/* Dropdown Select */}
-			<div className="mb-8">
-				<Select value={sector} onValueChange={setSector}>
-					<SelectTrigger className="w-[220px]">
-						<SelectValue placeholder="Pilih Sektor Usaha..." />
-					</SelectTrigger>
-					<SelectContent>
-						{sectorOptions.map((opt) => (
-							<SelectItem key={opt.value} value={opt.value}>
-								{opt.title}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
+			<div className="mb-8 flex flex-wrap gap-4">
+				<div>
+					<Select value={sector} onValueChange={setSector}>
+						<SelectTrigger className="w-[220px]">
+							<SelectValue placeholder="Pilih Sektor Usaha..." />
+						</SelectTrigger>
+						<SelectContent>
+							{sectorOptions.map((opt) => (
+								<SelectItem key={opt.value} value={opt.value}>
+									{opt.title}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</div>
+				<div>
+					<Select value={sort} onValueChange={setSort}>
+						<SelectTrigger className="w-[200px]">
+							<SelectValue placeholder="Urutkan" />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="newest">Terbaru</SelectItem>
+							<SelectItem value="likes-desc">Terbanyak Disukai</SelectItem>
+						</SelectContent>
+					</Select>
+				</div>
 			</div>
 			{/* Grid UMKM */}
 			<div className="grid grid-cols-1 gap-6 md:grid-cols-4">
@@ -87,7 +134,10 @@ function UmkmCard({ umkm }: { umkm: any }) {
 				<p className="flex-1 text-sm text-neutral-600">{umkm.description}</p>
 				<div className="mt-3 flex items-center justify-between text-xs text-gray-600">
 					<span>{umkm.sector}</span>
-					<LikeButton id={umkm._id} initialLikes={umkm.likes ?? 0} />
+					<LikeButton
+						id={umkm._id}
+						initialLikes={umkm.likeCount ?? umkm.likes ?? 0}
+					/>
 				</div>
 			</CardContent>
 			<CardFooter className="p-6 pt-0">
@@ -102,7 +152,13 @@ function UmkmCard({ umkm }: { umkm: any }) {
 		</Card>
 	);
 }
-function LikeButton({ id, initialLikes }: { id: string; initialLikes: number }) {
+function LikeButton({
+	id,
+	initialLikes,
+}: {
+  id: string;
+  initialLikes: number;
+}) {
 	const { data, mutate } = useSWR(
 		id ? `/api/umkm-like-count?id=${id}` : null,
 		fetcher,
@@ -145,7 +201,7 @@ function LikeButton({ id, initialLikes }: { id: string; initialLikes: number }) 
 		<button
 			onClick={handleLike}
 			disabled={submitting || limitReached}
-			className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-medium shadow disabled:opacity-50 transition ${
+			className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-medium shadow transition disabled:opacity-50 ${
 				limitReached
 					? "bg-gray-200 text-gray-500"
 					: "bg-white/70 text-zaitun hover:bg-white"
@@ -154,7 +210,7 @@ function LikeButton({ id, initialLikes }: { id: string; initialLikes: number }) 
 			title={limitReached ? "Batas 10 like / jam tercapai" : "Like"}
 		>
 			<span role="img" aria-hidden>
-				👍
+        👍
 			</span>
 			{likes}
 		</button>

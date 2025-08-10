@@ -37,6 +37,7 @@ export type Wisata = {
     _key: string;
   }>;
   address?: string;
+  location?: Geopoint;
   description?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -108,6 +109,7 @@ export type Umkm = {
     | "teknologi"
     | "jasa"
     | "lainnya";
+  likes?: number;
 };
 export type Program = {
   _id: string;
@@ -324,21 +326,17 @@ export type AllSanitySchemaTypes =
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./src/sanity/lib/queries.ts
 // Variable: HOME_HERO_QUERY
-// Query: *[_type == "home"][0].hero{  heading,  subheading,  image,  cta}
+// Query: *[_type == "home"][0].hero{  heading,  subheading,  image{    asset->{      url,      metadata { lqip }    }  },  cta}
 export type HOME_HERO_QUERYResult = {
   heading: string | null;
   subheading: string | null;
   image: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
+    asset: {
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+      } | null;
+    } | null;
   } | null;
   cta: {
     text?: string;
@@ -346,40 +344,32 @@ export type HOME_HERO_QUERYResult = {
   } | null;
 } | null;
 // Variable: PROGRAM_LIST_QUERY
-// Query: *[_type == "program"] | order(_createdAt desc) {    title,    "slug": slug.current,    description,    image  }
+// Query: *[_type == "program"] | order(_createdAt desc) {    title,    "slug": slug.current,    description,    image{      asset->{        url,        metadata { lqip }      }    }  }
 export type PROGRAM_LIST_QUERYResult = Array<{
   title: string | null;
   slug: string | null;
   description: string | null;
   image: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
+    asset: {
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+      } | null;
+    } | null;
   } | null;
 }>;
 // Variable: PROGRAM_DETAIL_QUERY
-// Query: *[_type == "program" && slug.current == $slug][0] {    title,    description,    image,    detail  }
+// Query: *[_type == "program" && slug.current == $slug][0] {    title,    description,    image{      asset->{        url,        metadata { lqip }      }    },    detail  }
 export type PROGRAM_DETAIL_QUERYResult = {
   title: string | null;
   description: string | null;
   image: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
+    asset: {
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+      } | null;
+    } | null;
   } | null;
   detail: Array<{
     children?: Array<{
@@ -401,22 +391,19 @@ export type PROGRAM_DETAIL_QUERYResult = {
   }> | null;
 } | null;
 // Variable: UMKM_LIST_QUERY
-// Query: *[_type == "umkm"] | order(_createdAt desc) {    name,    "slug": slug.current,    description,    image,    sector  }
+// Query: *[_type == "umkm"] | order(_createdAt desc) {  _id,    name,    "slug": slug.current,    description,    image{      asset->{        url,        metadata { lqip }      }    },  sector,  likes  }
 export type UMKM_LIST_QUERYResult = Array<{
+  _id: string;
   name: string | null;
   slug: string | null;
   description: string | null;
   image: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
+    asset: {
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+      } | null;
+    } | null;
   } | null;
   sector:
     | "fashion"
@@ -426,23 +413,21 @@ export type UMKM_LIST_QUERYResult = Array<{
     | "lainnya"
     | "teknologi"
     | null;
+  likes: number | null;
 }>;
 // Variable: UMKM_DETAIL_QUERY
-// Query: *[_type == "umkm" && slug.current == $slug][0] {    name,    description,    image,    profile,    sector,    contact  }
+// Query: *[_type == "umkm" && slug.current == $slug][0] {  _id,    name,    description,    image{      asset->{        url,        metadata { lqip }      }    },    profile,    sector,  contact,  likes  }
 export type UMKM_DETAIL_QUERYResult = {
+  _id: string;
   name: string | null;
   description: string | null;
   image: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
+    asset: {
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+      } | null;
+    } | null;
   } | null;
   profile: Array<{
     children?: Array<{
@@ -476,35 +461,122 @@ export type UMKM_DETAIL_QUERYResult = {
     email?: string;
     website?: string;
   } | null;
+  likes: number | null;
 } | null;
 // Variable: UMKM_THREE_QUERY
-// Query: *[_type == "umkm"] | order(_createdAt desc)[0...8] {    name,    "slug": slug.current,    description,    image  }
+// Query: *[_type == "umkm"] | order(_createdAt desc)[0...8] {  _id,    name,    "slug": slug.current,    description,    image{      asset->{        url,        metadata { lqip }      }    }  }
 export type UMKM_THREE_QUERYResult = Array<{
+  _id: string;
   name: string | null;
   slug: string | null;
   description: string | null;
   image: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    _type: "image";
+    asset: {
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+      } | null;
+    } | null;
   } | null;
+}>;
+// Variable: WISATA_LIST_QUERY
+// Query: *[_type == "wisata"] | order(_createdAt desc) {    name,    "slug": slug.current,    images[]{      asset->{        url,        metadata { lqip }      }    },    address,    ticketPrice,    operationalDays,    operationalHours  }
+export type WISATA_LIST_QUERYResult = Array<{
+  name: string | null;
+  slug: string | null;
+  images: Array<{
+    asset: {
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+      } | null;
+    } | null;
+  }> | null;
+  address: string | null;
+  ticketPrice: string | null;
+  operationalDays: string | null;
+  operationalHours: string | null;
+}>;
+// Variable: WISATA_DETAIL_QUERY
+// Query: *[_type == "wisata" && slug.current == $slug][0] {    name,    images[]{      asset->{        url,        metadata { lqip }      }    },    address,    ticketPrice,    operationalDays,    operationalHours,  description,  location  }
+export type WISATA_DETAIL_QUERYResult = {
+  name: string | null;
+  images: Array<{
+    asset: {
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+      } | null;
+    } | null;
+  }> | null;
+  address: string | null;
+  ticketPrice: string | null;
+  operationalDays: string | null;
+  operationalHours: string | null;
+  description: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }> | null;
+  location: Geopoint | null;
+} | null;
+// Variable: WISATA_THREE_QUERY
+// Query: *[_type == "wisata"] | order(_createdAt desc)[0...3] {    name,    "slug": slug.current,    images[]{      asset->{        url,        metadata { lqip }      }    },    description  }
+export type WISATA_THREE_QUERYResult = Array<{
+  name: string | null;
+  slug: string | null;
+  images: Array<{
+    asset: {
+      url: string | null;
+      metadata: {
+        lqip: string | null;
+      } | null;
+    } | null;
+  }> | null;
+  description: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs?: Array<{
+      href?: string;
+      _type: "link";
+      _key: string;
+    }>;
+    level?: number;
+    _type: "block";
+    _key: string;
+  }> | null;
 }>;
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "*[_type == \"home\"][0].hero{\n  heading,\n  subheading,\n  image,\n  cta\n}": HOME_HERO_QUERYResult;
-    "\n  *[_type == \"program\"] | order(_createdAt desc) {\n    title,\n    \"slug\": slug.current,\n    description,\n    image\n  }\n": PROGRAM_LIST_QUERYResult;
-    "\n  *[_type == \"program\" && slug.current == $slug][0] {\n    title,\n    description,\n    image,\n    detail\n  }\n": PROGRAM_DETAIL_QUERYResult;
-    "\n  *[_type == \"umkm\"] | order(_createdAt desc) {\n    name,\n    \"slug\": slug.current,\n    description,\n    image,\n    sector\n  }\n": UMKM_LIST_QUERYResult;
-    "\n  *[_type == \"umkm\" && slug.current == $slug][0] {\n    name,\n    description,\n    image,\n    profile,\n    sector,\n    contact\n  }\n": UMKM_DETAIL_QUERYResult;
-    "\n  *[_type == \"umkm\"] | order(_createdAt desc)[0...8] {\n    name,\n    \"slug\": slug.current,\n    description,\n    image\n  }\n": UMKM_THREE_QUERYResult;
+    "*[_type == \"home\"][0].hero{\n  heading,\n  subheading,\n  image{\n    asset->{\n      url,\n      metadata { lqip }\n    }\n  },\n  cta\n}": HOME_HERO_QUERYResult;
+    "\n  *[_type == \"program\"] | order(_createdAt desc) {\n    title,\n    \"slug\": slug.current,\n    description,\n    image{\n      asset->{\n        url,\n        metadata { lqip }\n      }\n    }\n  }\n": PROGRAM_LIST_QUERYResult;
+    "\n  *[_type == \"program\" && slug.current == $slug][0] {\n    title,\n    description,\n    image{\n      asset->{\n        url,\n        metadata { lqip }\n      }\n    },\n    detail\n  }\n": PROGRAM_DETAIL_QUERYResult;
+    "\n  *[_type == \"umkm\"] | order(_createdAt desc) {\n  _id,\n    name,\n    \"slug\": slug.current,\n    description,\n    image{\n      asset->{\n        url,\n        metadata { lqip }\n      }\n    },\n  sector,\n  likes\n  }\n": UMKM_LIST_QUERYResult;
+    "\n  *[_type == \"umkm\" && slug.current == $slug][0] {\n  _id,\n    name,\n    description,\n    image{\n      asset->{\n        url,\n        metadata { lqip }\n      }\n    },\n    profile,\n    sector,\n  contact,\n  likes\n  }\n": UMKM_DETAIL_QUERYResult;
+    "\n  *[_type == \"umkm\"] | order(_createdAt desc)[0...8] {\n  _id,\n    name,\n    \"slug\": slug.current,\n    description,\n    image{\n      asset->{\n        url,\n        metadata { lqip }\n      }\n    }\n  }\n": UMKM_THREE_QUERYResult;
+    "\n  *[_type == \"wisata\"] | order(_createdAt desc) {\n    name,\n    \"slug\": slug.current,\n    images[]{\n      asset->{\n        url,\n        metadata { lqip }\n      }\n    },\n    address,\n    ticketPrice,\n    operationalDays,\n    operationalHours\n  }\n": WISATA_LIST_QUERYResult;
+    "\n  *[_type == \"wisata\" && slug.current == $slug][0] {\n    name,\n    images[]{\n      asset->{\n        url,\n        metadata { lqip }\n      }\n    },\n    address,\n    ticketPrice,\n    operationalDays,\n    operationalHours,\n  description,\n  location\n  }\n": WISATA_DETAIL_QUERYResult;
+    "\n  *[_type == \"wisata\"] | order(_createdAt desc)[0...3] {\n    name,\n    \"slug\": slug.current,\n    images[]{\n      asset->{\n        url,\n        metadata { lqip }\n      }\n    },\n    description\n  }\n": WISATA_THREE_QUERYResult;
   }
 }

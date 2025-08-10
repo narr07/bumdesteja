@@ -72,7 +72,7 @@ export default async function ProgramDetailPage(
 						height={500}
 						className="rounded-2xl object-cover w-full"
 						placeholder="blur"
-						blurDataURL={program.image?.asset?.metadata?.lqip}
+						blurDataURL={program.image?.asset?.metadata?.lqip ?? undefined}
 					/>
 				</div>
 			)}
