@@ -7,15 +7,6 @@ import { notFound } from "next/navigation";
 import { PortableText } from "@portabletext/react";
 import type { Metadata } from "next";
 export const revalidate = 60;
-function portableTextToPlainText(blocks: any[]): string {
-	if (!Array.isArray(blocks)) return "";
-	return blocks
-		.filter(b => b._type === "block" && Array.isArray(b.children))
-		.map(b => b.children.map((c: any) => c.text).join(""))
-		.join("\n")
-		.replace(/\s+/g, " ")
-		.trim();
-}
 export async function generateMetadata(
 	{ params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
@@ -24,41 +15,35 @@ export async function generateMetadata(
 	if (!wisata) {
 		return {
 			title: "Wisata Tidak Ditemukan",
-			description: ""
+			description: "",
 		};
 	}
-	const plainDesc = wisata.description
-		? portableTextToPlainText(wisata.description).slice(0, 160)
-		: "";
-	const firstImage = Array.isArray(wisata.images) && wisata.images.length > 0
-		? wisata.images[0]
-		: null;
-	const ogImage = firstImage
-		? [{
-			url: urlFor(firstImage).width(1200).height(630).url(),
-			width: 1200,
-			height: 630,
-			alt: wisata.name ?? ""
-		}]
-		: [];
-	const twitterImages = firstImage
-		? [urlFor(firstImage).width(800).height(500).url()]
-		: [];
 	return {
-		title: wisata.name ?? "",
-		description: plainDesc,
+		title: wisata.title ?? "",
+		description: wisata.description ?? "",
 		openGraph: {
-			title: wisata.name ?? "",
-			description: plainDesc,
+			title: wisata.title ?? "",
+			description: wisata.description ?? "",
 			url: `/wisata/${slug}`,
-			images: ogImage
+			images: wisata.image
+				? [
+					{
+						url: urlFor(wisata.image).width(1200).height(630).url(),
+						width: 1200,
+						height: 630,
+						alt: wisata.title ?? "",
+					},
+				]
+				: [],
 		},
 		twitter: {
 			card: "summary_large_image",
-			title: wisata.name ?? "",
-			description: plainDesc,
-			images: twitterImages
-		}
+			title: wisata.title ?? "",
+			description: wisata.description ?? "",
+			images: wisata.image
+				? [urlFor(wisata.image).width(800).height(500).url()]
+				: [],
+		},
 	};
 }
 export default async function WisataDetailPage(

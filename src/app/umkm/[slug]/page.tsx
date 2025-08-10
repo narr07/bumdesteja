@@ -7,9 +7,9 @@ import { PortableText } from "@portabletext/react";
 import type { Metadata } from "next";
 export const revalidate = 30;
 export async function generateMetadata(
-	{ params }: { params: { slug: string } }
+	{ params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
-	const { slug } = params;
+	const { slug } = await params;
 	const umkm = await client.fetch(UMKM_DETAIL_QUERY, { slug });
 	if (!umkm) {
 		return {
@@ -46,9 +46,9 @@ export async function generateMetadata(
 	};
 }
 export default async function UmkmDetailPage(
-	{ params }: { params: { slug: string } }
+	{ params }: { params: Promise<{ slug: string }> }
 ) {
-	const { slug } = params;
+	const { slug } = await params;
 	const umkm = await client.fetch(UMKM_DETAIL_QUERY, { slug });
 	if (!umkm) {
 		notFound();
