@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/components/UmkmList.tsx
-// src/app/umkm/UmkmList.tsx
 "use client";
 import { useState, useMemo } from "react";
 import { urlFor } from "@/sanity/lib/image";
