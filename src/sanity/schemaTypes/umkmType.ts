@@ -86,5 +86,12 @@ export const umkmType = defineType({
 				],
 			},
 		}),
+		// Jumlah like (guest like)
+		defineField({
+			name: "likes",
+			title: "Jumlah Like",
+			type: "number",
+			initialValue: 0,
+		}),
 	],
 });

@@ -42,6 +42,7 @@ export const PROGRAM_DETAIL_QUERY = defineQuery(`
 // Query: List UMKM
 export const UMKM_LIST_QUERY = defineQuery(`
   *[_type == "umkm"] | order(_createdAt desc) {
+  _id,
     name,
     "slug": slug.current,
     description,
@@ -51,12 +52,14 @@ export const UMKM_LIST_QUERY = defineQuery(`
         metadata { lqip }
       }
     },
-    sector
+  sector,
+  likes
   }
 `);
 // Query: Detail UMKM
 export const UMKM_DETAIL_QUERY = defineQuery(`
   *[_type == "umkm" && slug.current == $slug][0] {
+  _id,
     name,
     description,
     image{
@@ -67,12 +70,14 @@ export const UMKM_DETAIL_QUERY = defineQuery(`
     },
     profile,
     sector,
-    contact
+  contact,
+  likes
   }
 `);
 // Query: 8 UMKM terakhir
 export const UMKM_THREE_QUERY = defineQuery(`
   *[_type == "umkm"] | order(_createdAt desc)[0...8] {
+  _id,
     name,
     "slug": slug.current,
     description,

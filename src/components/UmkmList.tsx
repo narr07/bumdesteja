@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/components/UmkmList.tsx
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
+import useSWR from "swr";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import Link from "next/link";
@@ -57,44 +58,105 @@ export default function UmkmList({ umkmList }: { umkmList: any[] }) {
 			</div>
 			{/* Grid UMKM */}
 			<div className="grid grid-cols-1 gap-6 md:grid-cols-4">
-				{filteredList?.map((umkm, idx) => (
-					<Card
-						key={idx}
-						className="group flex flex-col justify-between rounded-2xl bg-pastel shadow-md transition hover:bg-lemon hover:shadow-lg"
-					>
-						<CardContent className="flex flex-1 flex-col p-6">
-							{umkm.image && (
-								<Image
-									src={urlFor(umkm.image).width(500).height(300).url()}
-									alt={umkm.name}
-									width={500}
-									height={300}
-									className="mb-4 rounded-xl object-cover"
-									placeholder="blur"
-									blurDataURL={umkm.image?.asset?.metadata?.lqip}
-									priority
-								/>
-							)}
-							<h3 className="mb-2 text-lg font-bold text-zaitun">
-								{umkm.name}
-							</h3>
-							<p className="flex-1 text-sm text-neutral-600">
-								{umkm.description}
-							</p>
-							<span className="mt-2 text-xs text-gray-500">{umkm.sector}</span>
-						</CardContent>
-						<CardFooter className="p-6 pt-0">
-							<Button
-								asChild
-								variant="lemon"
-								className="w-full font-semibold text-zaitun transition-colors group-hover:bg-zaitun group-hover:text-lemon"
-							>
-								<Link href={`/umkm/${umkm.slug}`}>Detail</Link>
-							</Button>
-						</CardFooter>
-					</Card>
+				{filteredList?.map((umkm) => (
+					<UmkmCard key={umkm._id ?? umkm.slug} umkm={umkm} />
 				))}
 			</div>
 		</main>
+	);
+}
+// Simple fetcher for SWR
+const fetcher = (url: string) => fetch(url).then((r) => r.json());
+function UmkmCard({ umkm }: { umkm: any }) {
+	return (
+		<Card className="group flex flex-col justify-between rounded-2xl bg-pastel shadow-md transition hover:bg-lemon hover:shadow-lg">
+			<CardContent className="flex flex-1 flex-col p-6">
+				{umkm.image && (
+					<Image
+						src={urlFor(umkm.image).width(500).height(300).url()}
+						alt={umkm.name}
+						width={500}
+						height={300}
+						className="mb-4 rounded-xl object-cover"
+						placeholder="blur"
+						blurDataURL={umkm.image?.asset?.metadata?.lqip}
+						priority
+					/>
+				)}
+				<h3 className="mb-1 text-lg font-bold text-zaitun">{umkm.name}</h3>
+				<p className="flex-1 text-sm text-neutral-600">{umkm.description}</p>
+				<div className="mt-3 flex items-center justify-between text-xs text-gray-600">
+					<span>{umkm.sector}</span>
+					<LikeButton id={umkm._id} initialLikes={umkm.likes ?? 0} />
+				</div>
+			</CardContent>
+			<CardFooter className="p-6 pt-0">
+				<Button
+					asChild
+					variant="lemon"
+					className="w-full font-semibold text-zaitun transition-colors group-hover:bg-zaitun group-hover:text-lemon"
+				>
+					<Link href={`/umkm/${umkm.slug}`}>Detail</Link>
+				</Button>
+			</CardFooter>
+		</Card>
+	);
+}
+function LikeButton({ id, initialLikes }: { id: string; initialLikes: number }) {
+	const { data, mutate } = useSWR(
+		id ? `/api/umkm-like-count?id=${id}` : null,
+		fetcher,
+		{ fallbackData: { likes: initialLikes } }
+	);
+	const [submitting, setSubmitting] = useState(false);
+	const likes = data?.likes ?? initialLikes;
+	const [remaining, setRemaining] = useState<number | null>(null);
+	const limitReached = remaining !== null && remaining <= 0;
+	const handleLike = useCallback(async () => {
+		if (!id || submitting || limitReached) return;
+		setSubmitting(true);
+		const optimistic = likes + 1;
+		const rollback = data;
+		mutate({ ...data, likes: optimistic }, false);
+		try {
+			const res = await fetch("/api/umkm-like", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ id }),
+			});
+			if (res.status === 429) {
+				mutate(rollback, false);
+				setRemaining(0);
+				setSubmitting(false);
+				return;
+			}
+			const json = await res.json();
+			if (json.likes !== undefined) {
+				mutate({ likes: json.likes }, false);
+				if (typeof json.remaining === "number") setRemaining(json.remaining);
+			}
+		} catch {
+			mutate(rollback, false);
+		} finally {
+			setSubmitting(false);
+		}
+	}, [id, submitting, limitReached, likes, data, mutate]);
+	return (
+		<button
+			onClick={handleLike}
+			disabled={submitting || limitReached}
+			className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-medium shadow disabled:opacity-50 transition ${
+				limitReached
+					? "bg-gray-200 text-gray-500"
+					: "bg-white/70 text-zaitun hover:bg-white"
+			}`}
+			aria-label="Like UMKM"
+			title={limitReached ? "Batas 10 like / jam tercapai" : "Like"}
+		>
+			<span role="img" aria-hidden>
+				👍
+			</span>
+			{likes}
+		</button>
 	);
 }
