@@ -4,6 +4,11 @@
   "tailwindPreserveWhitespace": true,
   "singleQuote": false,
   "semi": true,
+  "overrides": [
+    {
+      "files": ["src/app/**/*", "src/component/**/*"]
+    }
+  ],
   "trailingComma": "es5",
   "tabWidth": 2
 }

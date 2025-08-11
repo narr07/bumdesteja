@@ -1,3 +1,4 @@
+// src/app/umkm/[slug]/page.tsx
 import { client } from "@/sanity/lib/client";
 import { UMKM_DETAIL_QUERY } from "@/sanity/lib/queries";
 // import { urlFor } from "@/sanity/lib/image"; // dynamic OG image provided
@@ -6,6 +7,7 @@ import { notFound } from "next/navigation";
 import { PortableText } from "@portabletext/react";
 import type { Metadata } from "next";
 import { urlFor } from "@/sanity/lib/image"; // still used for main image display
+import UmkmLikeButton from "@/components/UmkmLikeButton";
 export const revalidate = 30;
 export async function generateMetadata({
 	params,
@@ -59,9 +61,19 @@ export default async function UmkmDetailPage({
 	}
 	return (
 		<main className="mx-auto max-w-4xl px-4 py-12">
-			<h1 className="mb-6 text-3xl font-bold text-lime-500 md:text-4xl">
-				{umkm.name}
-			</h1>
+			<header className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+				<h1 className="text-3xl font-bold text-lime-500 md:text-4xl">
+					{umkm.name}
+				</h1>
+				{umkm._id && (
+					<UmkmLikeButton
+						id={umkm._id}
+						initialLikes={umkm.likes ?? 0}
+						className="self-start"
+						size="md"
+					/>
+				)}
+			</header>
 			{umkm.image && (
 				<div className="mb-6">
 					<Image

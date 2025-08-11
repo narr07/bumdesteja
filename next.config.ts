@@ -10,6 +10,12 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "raw.githubusercontent.com",
+        port: "", // optional, usually empty
+        pathname: "/**", // ini untuk semua path, bisa juga '/320x240' saja
+      },
+      {
+        protocol: "https",
         hostname: "placehold.co",
         port: "", // optional, usually empty
         pathname: "/**", // ini untuk semua path, bisa juga '/320x240' saja

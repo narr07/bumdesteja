@@ -5,16 +5,16 @@ import { FlatCompat } from "@eslint/eslintrc";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const compat = new FlatCompat({
-  baseDirectory: __dirname,
+	baseDirectory: __dirname,
 });
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript", "prettier"),
-  {
-    rules: {
-      quotes: ["error", "double"],
-      indent: ["error", "tab"],
-      "no-multiple-empty-lines": ["error", { max: 0, maxEOF: 0, maxBOF: 0 }],
-    },
-  },
+	...compat.extends("next/core-web-vitals", "next/typescript", ),
+	{
+		rules: {
+			quotes: ["error", "double"],
+			indent: ["error", "tab"],
+			"no-multiple-empty-lines": ["error", { max: 0, maxEOF: 0, maxBOF: 0 }],
+		},
+	},
 ];
 export default eslintConfig;

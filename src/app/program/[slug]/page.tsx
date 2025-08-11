@@ -8,9 +8,11 @@ import { PortableText } from "@portabletext/react";
 import type { Metadata } from "next";
 export const revalidate = 30;
 // ✅ Metadata dinamis sesuai slug
-export async function generateMetadata(
-	{ params }: { params: Promise<{ slug: string }> }
-): Promise<Metadata> {
+export async function generateMetadata({
+	params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
 	const { slug } = await params;
 	const program = await client.fetch(PROGRAM_DETAIL_QUERY, { slug });
 	if (!program) {
@@ -48,9 +50,11 @@ export async function generateMetadata(
 	};
 }
 // ✅ Page Detail
-export default async function ProgramDetailPage(
-	{ params }: { params: Promise<{ slug: string }> }
-) {
+export default async function ProgramDetailPage({
+	params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
 	const { slug } = await params;
 	const program = await client.fetch(PROGRAM_DETAIL_QUERY, { slug });
 	if (!program) {
@@ -59,7 +63,7 @@ export default async function ProgramDetailPage(
 	return (
 		<main className="mx-auto max-w-4xl px-4 py-12">
 			{/* Judul */}
-			<h1 className="text-3xl md:text-4xl font-bold text-lime-500 mb-6">
+			<h1 className="mb-6 text-3xl font-bold text-lime-500 md:text-4xl">
 				{program.title}
 			</h1>
 			{/* Gambar utama */}
@@ -70,14 +74,14 @@ export default async function ProgramDetailPage(
 						alt={program.title ?? "Program image"}
 						width={800}
 						height={500}
-						className="rounded-2xl object-cover w-full"
+						className="w-full rounded-2xl object-cover"
 						placeholder="blur"
 						blurDataURL={program.image?.asset?.metadata?.lqip ?? undefined}
 					/>
 				</div>
 			)}
 			{/* Deskripsi singkat */}
-			<p className="text-neutral-700 mb-8">{program.description}</p>
+			<p className="mb-8 text-neutral-700">{program.description}</p>
 			{/* Detail panjang */}
 			{program.detail && (
 				<article className="prose prose-lg max-w-none">

@@ -4,6 +4,7 @@ import { WISATA_DETAIL_QUERY } from "@/sanity/lib/queries";
 // import { urlFor } from "@/sanity/lib/image"; // OG image now generated dynamically
 import WisataGallery from "@/components/WisataGallery";
 import { notFound } from "next/navigation";
+import WisataLikeButton from "@/components/WisataLikeButton";
 import { PortableText } from "@portabletext/react";
 // Import client component directly (it contains its own dynamic imports for Leaflet)
 import WisataMap from "@/components/WisataMap";
@@ -24,26 +25,25 @@ export async function generateMetadata({
 	}
 	// query returns object with name & description
 	const title =
-	(wisata && "name" in wisata
-		? (wisata as { name?: string }).name
-		: undefined) ?? "";
+    (wisata && "name" in wisata
+    	? (wisata as { name?: string }).name
+    	: undefined) ?? "";
 	// Safely convert possible Portable Text blocks to plain string for metadata
 	const rawDescription = (wisata as any).description;
 	const description =
-	typeof rawDescription === "string"
-		? rawDescription
-		: Array.isArray(rawDescription)
-			? rawDescription
-				.map(
-					(block: any) =>
-						block?.children
-							?.map((child: any) => child.text)
-							.filter(Boolean)
-							.join(" ")
-				)
-				.filter(Boolean)
-				.join("\n")
-			: "";
+    typeof rawDescription === "string"
+    	? rawDescription
+    	: Array.isArray(rawDescription)
+    		? rawDescription
+    			.map((block: any) =>
+    				block?.children
+    					?.map((child: any) => child.text)
+    					.filter(Boolean)
+    					.join(" ")
+    			)
+    			.filter(Boolean)
+    			.join("\n")
+    		: "";
 	return {
 		title,
 		description,
@@ -80,7 +80,16 @@ export default async function WisataDetailPage({
 	}
 	return (
 		<main className="mx-auto max-w-6xl px-4 py-12">
-			<h1 className="mb-6 text-4xl font-bold text-lime-600">{wisata.name}</h1>
+			<header className="mb-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+				<h1 className="text-4xl font-bold text-lime-600">{wisata.name}</h1>
+				{(wisata as any)._id && (
+					<WisataLikeButton
+						id={(wisata as any)._id}
+						initialLikes={(wisata as any).likes ?? 0}
+						size="md"
+					/>
+				)}
+			</header>
 			<WisataGallery images={wisata.images} name={wisata.name ?? ""} />
 			<div className="mb-8 rounded-xl bg-pastel p-6 shadow">
 				<ul className="space-y-2 text-sm text-neutral-700 md:text-base">

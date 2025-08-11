@@ -92,6 +92,7 @@ export const UMKM_THREE_QUERY = defineQuery(`
 // List Wisata
 export const WISATA_LIST_QUERY = defineQuery(`
   *[_type == "wisata"] | order(_createdAt desc) {
+  _id,
     name,
     "slug": slug.current,
     images[]{
@@ -103,12 +104,13 @@ export const WISATA_LIST_QUERY = defineQuery(`
     address,
     ticketPrice,
     operationalDays,
-    operationalHours
+  operationalHours,
   }
 `);
 // Detail Wisata
 export const WISATA_DETAIL_QUERY = defineQuery(`
   *[_type == "wisata" && slug.current == $slug][0] {
+  _id,
     name,
     images[]{
       asset->{
@@ -121,7 +123,7 @@ export const WISATA_DETAIL_QUERY = defineQuery(`
     operationalDays,
     operationalHours,
   description,
-  location
+  location,
   }
 `);
 // Query: 3 Wisata terakhir

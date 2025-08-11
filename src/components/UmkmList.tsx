@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/components/UmkmList.tsx
 "use client";
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import useSWR from "swr";
 import { urlFor } from "@/sanity/lib/image";
 import Image from "next/image";
 import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import UmkmLikeButton from "@/components/UmkmLikeButton";
 import {
 	Select,
 	SelectContent,
@@ -112,8 +113,6 @@ export default function UmkmList({ umkmList }: { umkmList: any[] }) {
 		</main>
 	);
 }
-// Simple fetcher for SWR
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
 function UmkmCard({ umkm }: { umkm: any }) {
 	return (
 		<Card className="group flex flex-col justify-between rounded-2xl bg-pastel shadow-md transition hover:bg-lemon hover:shadow-lg">
@@ -134,7 +133,7 @@ function UmkmCard({ umkm }: { umkm: any }) {
 				<p className="flex-1 text-sm text-neutral-600">{umkm.description}</p>
 				<div className="mt-3 flex items-center justify-between text-xs text-gray-600">
 					<span>{umkm.sector}</span>
-					<LikeButton
+					<UmkmLikeButton
 						id={umkm._id}
 						initialLikes={umkm.likeCount ?? umkm.likes ?? 0}
 					/>
@@ -152,67 +151,4 @@ function UmkmCard({ umkm }: { umkm: any }) {
 		</Card>
 	);
 }
-function LikeButton({
-	id,
-	initialLikes,
-}: {
-  id: string;
-  initialLikes: number;
-}) {
-	const { data, mutate } = useSWR(
-		id ? `/api/umkm-like-count?id=${id}` : null,
-		fetcher,
-		{ fallbackData: { likes: initialLikes } }
-	);
-	const [submitting, setSubmitting] = useState(false);
-	const likes = data?.likes ?? initialLikes;
-	const [remaining, setRemaining] = useState<number | null>(null);
-	const limitReached = remaining !== null && remaining <= 0;
-	const handleLike = useCallback(async () => {
-		if (!id || submitting || limitReached) return;
-		setSubmitting(true);
-		const optimistic = likes + 1;
-		const rollback = data;
-		mutate({ ...data, likes: optimistic }, false);
-		try {
-			const res = await fetch("/api/umkm-like", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ id }),
-			});
-			if (res.status === 429) {
-				mutate(rollback, false);
-				setRemaining(0);
-				setSubmitting(false);
-				return;
-			}
-			const json = await res.json();
-			if (json.likes !== undefined) {
-				mutate({ likes: json.likes }, false);
-				if (typeof json.remaining === "number") setRemaining(json.remaining);
-			}
-		} catch {
-			mutate(rollback, false);
-		} finally {
-			setSubmitting(false);
-		}
-	}, [id, submitting, limitReached, likes, data, mutate]);
-	return (
-		<button
-			onClick={handleLike}
-			disabled={submitting || limitReached}
-			className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[11px] font-medium shadow transition disabled:opacity-50 ${
-				limitReached
-					? "bg-gray-200 text-gray-500"
-					: "bg-white/70 text-zaitun hover:bg-white"
-			}`}
-			aria-label="Like UMKM"
-			title={limitReached ? "Batas 10 like / jam tercapai" : "Like"}
-		>
-			<span role="img" aria-hidden>
-        👍
-			</span>
-			{likes}
-		</button>
-	);
-}
+// LikeButton moved to separate component (UmkmLikeButton)
